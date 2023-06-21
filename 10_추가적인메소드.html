@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        .highlight-0{
+            background-color: red;
+        }
+        .highlight-1{
+            background-color: blue;
+        }
+        .highlight-2{
+            background-color: orange;
+        }
+        .highlight-3{
+            background-color: green;
+        }
+        .highlight-4{
+            background-color: violet;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>추가적인 메소드</h1>
+
+    <h3>* each 메소드</h3>
+    <p>
+        배열의 모든 인덱스에 순차적으로 접근하고자 할 때 ,<br>
+        객체가 가지고 있는 모든 속성에 순차적으로 접근하고자 할 때, <br>
+        (for in문, forEach메서드와 유사하게 수행되는 메소드)
+    </p>
+
+    <pre>
+        [표현법]
+        1) $.each( 배열/객체, function(매개변수1, 매개변수){
+
+        });
+        2) 객체/배열.each(function (매개변수, 매개변수){
+            <!-- index, value 자바랑 순서가 반대임  -->
+            순차적으로 접근해서 수행할 내용
+        });
+
+        순차적으로 객체/배열의 인덱스에 접근할때마다 함수가 실행(익명함수)
+        매개변수1, 매개변수2는 생략 가능
+
+        만약 객체를 제시했다면, 
+        첫번째 매개변수에는 순차적으로 접근된 객체의 속성명(키값)이 담김
+        두번째 매개변수에는 해당 속성값(밸류)이 담김
+
+        만약 배열을 제시했다면,
+        첫번째 매개변수에는 순차적으로 접근된 배열의 인덱스 수가 담기고 
+        두번째 매개변수에는 해당 인덱스값이 담김
+
+    </pre>
+
+    <div id="area1">
+
+    </div>
+
+    <script>
+        $(function(){
+
+            //배열을 제시하는 경우
+            const arr = ["배", "선", "유", "울지마"];
+
+            //첫번째 방법 $.each메소드 이용 !!! 이거 젤 많이 쓰임
+
+            // $.each(arr, function(index, value){ //위치 고정 못바뀸뀸
+            //     console.log("인덱스"+index+", 값 : "+value);
+            // });
+
+            //두번째 방법 객체/배열.each 메소드 이용
+            // arr.each(function(index,value){
+            //     console.log("인덱스"+index+", 값 : "+value);
+            // }); 이런 함수없다고 나옴
+            // $(arr).each(function(index,value){
+            //     //$()로 감싸주면 jQuery화 되어 오류없이 쓸 수 있다.
+            //     console.log("인덱스"+index+", 값 : "+value);
+            // });
+
+            // 객체를 제시하는 경우
+            const student = {
+                name : "배선유",
+                age : 29,
+                address : "수원"
+            };
+
+            //객체는 첫번째 방법으로만 쓰인다.
+            $.each(student, function(key, value){
+                console.log(`속성명 : ${key} , 속성값 : ${value}`);
+            });
+
+            // 객체 배열을 제시할 경우 // 가장많이 사용될거에여
+            const links = [
+                {name:"네이버", link:"https://www.naver.com"},
+                {name:"구글", link:"https://www.google.com"},
+                {name:"다음", link:"https://www.daum.net"}
+            ];
+            //앵커태그 묶음 만들고 area1 에다가 넣을거임
+            let output = "";
+            
+            //객체배열 반복문 돌려서
+            //<a href="xx">xxx</a>
+            $.each(links, function(index, value){
+                output += `<a href = ${value['link']}> ${value.name}</a><br>`;
+            });
+            $("#area1").html(output);
+        });
+    </script>
+
+    <!-- 
+        대표적으로 each메소드를 쓰는 경우 : 
+        선택된 여러개의 요소에 순차적으로 접근하고자 할 때
+     -->
+
+     <div id="wrap">
+        <h1>item-1</h1>
+        <h1>item-2</h1>
+        <h1>item-3</h1>
+        <h1>item-4</h1>
+        <h1>item-5</h1>
+     </div>
+
+     <script>
+        $(function(){
+            //[h1,h2,h3,h4,h5]
+            // $("#wrap>h1") // #(wrap").children()
+            $("#wrap").children().each(function(index, item){
+                //item에는 현재 순차적으로 접근된 h1 요소객체가 담겨있을것
+
+                // item.addClass("highlight-"+index); // item은 자바스크립트 객체, addclass는 쿼리에서쓰는것 쿼리화 해줘야함
+                //$(item).addClass("highlight-"+index);
+
+                // this 활용하기 -> this값은 순차적으로 접근하는 해당 요소 객체 // this와 item은 동일함
+                // $(this).addClass("highlight-"+index);
+
+                //자바스크립트로도 가능 //단점, 원래 있던 클래스명에도 덮어씌우기 됨
+                this.className = "highlight-"+index;
+            })
+        })
+     </script>
+
+     <!-- jQuery 방식으로 자바스크립트 방식의 요소객체 바꿔보기 -->
+     <div id="test">
+        안녕하세요!
+     </div>
+
+     <script>
+        $(function(){
+            //자바스크립트방식
+            const div = document.getElementById("test");
+
+            //자바스크립트방식으로 직접 접근
+            //div.style.backgroundColor="pink";
+
+            // jQuery방식으로 접근시
+            $(div).css({backgroundColor :"pink"}); // div.css로 쓰면 적용안됨 // 혹은 $("#test") 이렇게 불러와도 됨
+
+        })
+     </script>
+
+     <br><br>
+
+     <hr>
+
+     <h3>* is 메소드</h3>
+     <p>
+        $("선택자").is("선택자")<br>
+        선택된 요소가 내가 전달한 전달값과 일치하는지 판단해서 그에 해당하는 논리값
+        (true/false)
+     </p>
+
+     <h3 class="test">test1</h3>
+     <h3 >test2</h3>
+     <h3 class="test">test3</h3>
+     <h3 class="test">test4</h3>
+     <h3 >test5</h3>
+     <h3 class="test">test6</h3>
+
+     <script>
+        $(function(){
+            $("h3").each(function(){
+
+                // 현재 반복을 진행중인 요소가 test라는 클래스를 가지고 있는지
+                // 검사, 가지고 있을 경우 배경색을 orange, 가지고 있지 않을경우 purple
+                if($(this).is(".test")){// h3객체에 test가 있는지 
+                    $(this).css("backgroundColor", "orange");
+                } else{
+                    $(this).css("backgroundColor", "purple");
+                } 
+            });
+        })
+     </script>
+
+     <h1>Practice</h1>
+
+     <h2>Event 1</h2>
+
+     <select name="number">
+        <option value="">== 선택 ==</option>
+        <option value="">1번</option>
+        <option value="">2번</option>
+        <option value="">3번</option>
+        <option value="">4번</option>
+     </select>
+     <span id="selNum"></span>
+
+     <hr>
+     <!-- 각 번호 버튼 누르면 option 내부 컨텐츠 내용이 떠야함 / 선택도 포함 -->
+
+     <script>
+        $(function(){
+            $("select").change(function(event){
+                console.log(this); // 현재 체인지 이벤트가 발생한 
+                $("#selNum").text($("option:selected").html()); //컨텐츠 영역안에꺼를 어떻게 가져오냐고
+            });
+        });
+
+        ///집에 가서 에어컨 키고 해바라기씨나 먹고싶다
+
+     </script>
+
+     <table id="event2" border="1">
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>조회수</th>
+            <th>작성일자</th>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>3번제목</td>
+            <td>0</td>
+            <td>23-05-19</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2번제목</td>
+            <td>55</td>
+            <td>23-05-18</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1번제목</td>
+            <td>100</td>
+            <td>02-05-18</td>
+        </tr>
+     </table>
+
+     선택된 행 : <span id="s1"></span>
+                <span id="s2"></span>
+                <span id="s3"></span>
+                <span id="s4"></span>
+
+    <script>
+        $(function(){
+            //각 행을 선택했을 때 해당 내용이 밑에 출력되게끔 집에 가고 싶다
+            //집에 집에 가고싶다
+            // 
+            // 어"떻게 하지 아아앙ㅇㅇㅇ아아ㅏㅇ
+            $("tr").click(function(e){
+
+                // 최상단 헤더태그는 이벤트에서 제외
+                if($(this).is("#event2 tr:eq(0)")){
+                    return;
+                }
+                console.log(this); // 이벤트 잘부여됐는지~ 확인~ 
+
+                //this를 활용한 방법 || this 대신 e.target으로도 가져올 수 있지만 this로 해보자고 
+                // $(e.target).parent(); 
+                const tds = $(this).children(); // children("td") 이렇게 쓰면 th안걸러도 됨
+                // [td, td, td, td]
+
+                $.each(tds, function(index, item){
+                    $("#s"+(index+1)).html($(item).html());
+                });
+
+                //선택된 요소만 빨간색으로 바꾸기
+                $(this).css("backgroundColor", "red").siblings().css("backgroundColor", "white");
+                
+                $(this).css("backgroundColor", "red").filter(this).css("backgroundColor", "white");
+            })
+
+            //내가 푼 허접찌끄레기는 밖으로 
+                        // $(this).find("td").each(function(){
+                        //     ffffffff집에 갈게요~ 코딩 접을게요~ 
+                        // })
+
+        })
+    </script>
+
+</body>
+</html>
